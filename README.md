@@ -45,33 +45,97 @@ flowchart LR
 
 ## Quickstart
 
+### Prerequisites
+
+- Docker & Docker Compose v2+
+- Java 17+ (for Gradle builds)
+- Node.js 20+ (for dashboard & SDK)
+
+### 1. Start Infrastructure
+
 ```bash
-# 1. Start all infrastructure
+# Start Postgres, ClickHouse, Kafka/Zookeeper, and Kafka UI
+make infra-up
+
+# Or start everything (infra + app services when available)
 docker compose up -d
 
-# 2. Build & test Java modules
+# Check containers are running
+make ps
+```
+
+### 2. Verify Infrastructure
+
+```bash
+# Verify ClickHouse tables were created
+make verify-ch
+
+# Check Kafka topics in Kafka UI
+open http://localhost:8080
+```
+
+### 3. Build & Test Java Modules
+
+```bash
 ./gradlew :apps:api:test :apps:worker:test
+```
 
-# 3. Start apps
-docker compose up -d --build
+### 4. Seed Demo Data (after PR5)
 
-# 4. Seed demo data (after PR5)
+```bash
 node scripts/seed-demo.mjs
+```
 
-# 5. Open dashboard
+### 5. Open Dashboard (after PR7)
+
+```bash
 open http://localhost:5173
 ```
 
+## Infrastructure Services
+
+| Service       | Port(s)          | Description                     |
+|--------------|------------------|---------------------------------|
+| Postgres     | `5432`           | Metadata store (Flyway managed) |
+| ClickHouse   | `8123` / `9000`  | Analytics storage (HTTP / Native) |
+| Kafka        | `9092` / `29092` | Event streaming (internal / host) |
+| Zookeeper    | `2181`           | Kafka coordination              |
+| Kafka UI     | `8080`           | Topic browser & consumer groups |
+
+### ClickHouse Schema
+
+The `mobobs` database is auto-created on container start with these tables:
+
+| Table                | Engine              | Description                     |
+|---------------------|---------------------|---------------------------------|
+| `mobile_events`     | ReplacingMergeTree  | app_start, screen_view, custom events |
+| `mobile_api_calls`  | ReplacingMergeTree  | API timing & status tracking    |
+| `mobile_errors`     | ReplacingMergeTree  | Handled & unhandled errors      |
+| `mobile_sessions`   | ReplacingMergeTree  | Session lifecycle               |
+
+Materialized view rollups (insert-time aggregation):
+- `events_throughput_1m` — Event count per minute by type
+- `api_latency_1m` — API request count, error count, duration stats per endpoint
+- `error_rate_1m` — Error count per minute by class
+
+> **Note:** `ReplacingMergeTree` provides eventual deduplication by `event_id` after background merges. Do not rely on it for strict uniqueness at query time.
+
 ## Make Commands
 
-| Command      | Description                          |
-|-------------|--------------------------------------|
-| `make up`   | Start all containers                 |
-| `make down` | Stop all containers                  |
-| `make logs` | Tail API + worker logs               |
-| `make build`| Build Java modules                   |
-| `make test` | Run all Java tests                   |
-| `make seed` | Run seed demo script                 |
+| Command          | Description                          |
+|-----------------|--------------------------------------|
+| `make up`       | Start all containers                 |
+| `make down`     | Stop all containers                  |
+| `make ps`       | Show running containers              |
+| `make infra-up` | Start only infrastructure            |
+| `make infra-down`| Stop only infrastructure            |
+| `make infra-logs`| Tail infra logs                     |
+| `make verify-ch`| Verify ClickHouse tables exist       |
+| `make logs`     | Tail API + worker logs               |
+| `make build`    | Build Java modules                   |
+| `make test`     | Run all Java tests                   |
+| `make seed`     | Run seed demo script                 |
+| `make clean`    | Remove Docker volumes (destructive)  |
 
 ## Data Pipeline
 
