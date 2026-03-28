@@ -1,0 +1,10 @@
+{
+  "name": "@mobobs/rn-observability-sdk",
+  "version": "0.1.0",
+  "private": true,
+  "main": "src/index.ts",
+  "scripts": {
+    "test": "echo \"No tests configured yet\" && exit 0",
+    "build": "tsc"
+  }
+}

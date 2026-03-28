@@ -1,0 +1,5 @@
+spring:
+  application:
+    name: mobobs-api
+server:
+  port: 8000
