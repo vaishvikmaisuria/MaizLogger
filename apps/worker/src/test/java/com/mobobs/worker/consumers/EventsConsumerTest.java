@@ -22,7 +22,18 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
+import org.apache.kafka.clients.consumer.Consumer;
+import org.apache.kafka.clients.consumer.ConsumerConfig;
+import org.apache.kafka.clients.consumer.ConsumerRecords;
+import org.apache.kafka.common.serialization.ByteArrayDeserializer;
+import org.springframework.kafka.core.DefaultKafkaConsumerFactory;
+import org.springframework.kafka.test.utils.KafkaTestUtils;
+
+import java.time.Duration;
+
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.anyList;
+import static org.mockito.Mockito.*;
 import static org.mockito.Mockito.timeout;
 import static org.mockito.Mockito.verify;
 
@@ -66,6 +77,35 @@ class EventsConsumerTest {
 
         // Verify ClickHouseSink.insertEvents() is called within 10 s
         verify(clickHouseSink, timeout(10_000).atLeastOnce()).insertEvents(anyList());
+    }
+
+    @Test
+    void shouldPublishToDlqWhenSinkThrowsNonRetryableException() throws Exception {
+        // IllegalArgumentException is registered as non-retryable → goes straight to DLQ
+        doThrow(new IllegalArgumentException("unmappable event type"))
+                .when(clickHouseSink).insertEvents(anyList());
+
+        // Subscribe a consumer to the DLQ topic before publishing
+        Map<String, Object> consumerProps = KafkaTestUtils.consumerProps(
+                "dlq-verify-group", "true", embeddedKafkaBroker);
+        consumerProps.put(ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG,   ByteArrayDeserializer.class);
+        consumerProps.put(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, ByteArrayDeserializer.class);
+        consumerProps.put(ConsumerConfig.AUTO_OFFSET_RESET_CONFIG, "earliest");
+
+        Consumer<String, byte[]> dlqConsumer =
+                new DefaultKafkaConsumerFactory<String, byte[]>(consumerProps).createConsumer();
+        embeddedKafkaBroker.consumeFromAnEmbeddedTopic(dlqConsumer, "mobile.events.dlq");
+
+        // Publish a message that will fail and be routed to the DLQ
+        testTemplate.send("mobile.events.raw", buildAppStartEnvelope().event().sessionId(),
+                buildAppStartEnvelope()).get();
+
+        // Verify at least one record lands on the DLQ
+        ConsumerRecords<String, byte[]> dlqRecords =
+                KafkaTestUtils.getRecords(dlqConsumer, Duration.ofSeconds(15));
+        assertThat(dlqRecords.count()).isGreaterThan(0);
+
+        dlqConsumer.close();
     }
 
     // ── helpers ──────────────────────────────────────────────────────────────

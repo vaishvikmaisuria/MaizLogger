@@ -1,7 +1,0 @@
-# Test profile: override Kafka bootstrap-servers to the embedded broker
-# The property value is injected by @EmbeddedKafka via bootstrapServersProperty
-
-clickhouse:
-    url: jdbc:clickhouse://localhost:8123/mobobs
-    username: default
-    password: ""

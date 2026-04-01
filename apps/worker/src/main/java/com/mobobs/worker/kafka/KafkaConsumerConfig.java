@@ -1,6 +1,7 @@
 package com.mobobs.worker.kafka;
 
 import com.mobobs.worker.telemetry.TelemetryEnvelope;
+import org.apache.kafka.clients.consumer.ConsumerRecord;
 import org.apache.kafka.clients.producer.ProducerConfig;
 import org.apache.kafka.common.TopicPartition;
 import org.apache.kafka.common.serialization.StringSerializer;
@@ -20,6 +21,7 @@ import org.springframework.kafka.support.serializer.JsonSerializer;
 import org.springframework.util.backoff.FixedBackOff;
 
 import java.util.Map;
+import java.util.function.BiFunction;
 
 /**
  * Batch Kafka consumer configuration with DLQ support.
@@ -57,12 +59,11 @@ public class KafkaConsumerConfig {
     @Bean
     public ConcurrentKafkaListenerContainerFactory<String, TelemetryEnvelope> batchListenerContainerFactory(
             ConsumerFactory<String, TelemetryEnvelope> consumerFactory,
-            KafkaTemplate<String, Object> dlqKafkaTemplate) {
+            KafkaTemplate<String, Object> dlqKafkaTemplate,
+            BiFunction<ConsumerRecord<?, ?>, Exception, TopicPartition> dlqDestinationResolver) {
 
         DeadLetterPublishingRecoverer recoverer = new DeadLetterPublishingRecoverer(
-                dlqKafkaTemplate,
-                // Assign to DLQ partition -1 so Kafka picks the appropriate partition
-                (record, ex) -> new TopicPartition(record.topic().replace(".raw", ".dlq"), -1));
+                dlqKafkaTemplate, dlqDestinationResolver);
 
         DefaultErrorHandler errorHandler = new DefaultErrorHandler(
                 recoverer,

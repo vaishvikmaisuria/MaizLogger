@@ -1,7 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<testsuite name="com.mobobs.api.SanityTest" tests="1" skipped="0" failures="0" errors="0" timestamp="2026-04-01T01:12:47" hostname="Vaishviks-MacBook-Pro.local" time="0.041">
-  <properties/>
-  <testcase name="contextLoads()" classname="com.mobobs.api.SanityTest" time="0.041"/>
-  <system-out><![CDATA[]]></system-out>
-  <system-err><![CDATA[]]></system-err>
-</testsuite>
