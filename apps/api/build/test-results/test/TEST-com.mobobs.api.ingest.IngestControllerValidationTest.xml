@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<testsuite name="com.mobobs.api.ingest.IngestControllerValidationTest" tests="4" skipped="0" failures="0" errors="0" timestamp="2026-03-31T12:27:54" hostname="MCFXJNJTWD" time="0.139">
+<testsuite name="com.mobobs.api.ingest.IngestControllerValidationTest" tests="4" skipped="0" failures="0" errors="0" timestamp="2026-04-01T01:13:00" hostname="Vaishviks-MacBook-Pro.local" time="1.953">
   <properties/>
-  <testcase name="emptyEventsList_returns400()" classname="com.mobobs.api.ingest.IngestControllerValidationTest" time="0.093"/>
-  <testcase name="validBatch_returns202()" classname="com.mobobs.api.ingest.IngestControllerValidationTest" time="0.029"/>
-  <testcase name="invalidEventType_returns400()" classname="com.mobobs.api.ingest.IngestControllerValidationTest" time="0.002"/>
-  <testcase name="missingRequiredFields_returns400()" classname="com.mobobs.api.ingest.IngestControllerValidationTest" time="0.012"/>
-  <system-out><![CDATA[08:27:52.941 [Test worker] INFO org.springframework.test.context.support.AnnotationConfigContextLoaderUtils -- Could not detect default configuration classes for test class [com.mobobs.api.ingest.IngestControllerValidationTest]: IngestControllerValidationTest does not declare any static, non-private, non-final, nested classes annotated with @Configuration.
-08:27:53.006 [Test worker] INFO org.springframework.boot.test.context.SpringBootTestContextBootstrapper -- Found @SpringBootConfiguration com.mobobs.api.ApiApplication for test class com.mobobs.api.ingest.IngestControllerValidationTest
+  <testcase name="emptyEventsList_returns400()" classname="com.mobobs.api.ingest.IngestControllerValidationTest" time="1.495"/>
+  <testcase name="validBatch_returns202()" classname="com.mobobs.api.ingest.IngestControllerValidationTest" time="0.262"/>
+  <testcase name="invalidEventType_returns400()" classname="com.mobobs.api.ingest.IngestControllerValidationTest" time="0.033"/>
+  <testcase name="missingRequiredFields_returns400()" classname="com.mobobs.api.ingest.IngestControllerValidationTest" time="0.141"/>
+  <system-out><![CDATA[21:12:48.320 [Test worker] INFO org.springframework.test.context.support.AnnotationConfigContextLoaderUtils -- Could not detect default configuration classes for test class [com.mobobs.api.ingest.IngestControllerValidationTest]: IngestControllerValidationTest does not declare any static, non-private, non-final, nested classes annotated with @Configuration.
+21:12:48.792 [Test worker] INFO org.springframework.boot.test.context.SpringBootTestContextBootstrapper -- Found @SpringBootConfiguration com.mobobs.api.ApiApplication for test class com.mobobs.api.ingest.IngestControllerValidationTest
 
   .   ____          _            __ _ _
  /\\ / ___'_ __ _ _(_)_ __  __ _ \ \ \ \
@@ -16,12 +16,12 @@
  =========|_|==============|___/=/_/_/_/
  :: Spring Boot ::                (v3.2.5)
 
-2026-03-31T08:27:53.145-04:00  INFO 82860 --- [mobobs-api] [    Test worker] c.m.a.i.IngestControllerValidationTest   : Starting IngestControllerValidationTest using Java 17.0.17 with PID 82860 (started by vaishvik.maisuria in /Users/vaishvik.maisuria/Desktop/MLogger/apps/api)
-2026-03-31T08:27:53.146-04:00  INFO 82860 --- [mobobs-api] [    Test worker] c.m.a.i.IngestControllerValidationTest   : No active profile set, falling back to 1 default profile: "default"
-2026-03-31T08:27:53.993-04:00  INFO 82860 --- [mobobs-api] [    Test worker] o.s.b.t.m.w.SpringBootMockServletContext : Initializing Spring TestDispatcherServlet ''
-2026-03-31T08:27:53.993-04:00  INFO 82860 --- [mobobs-api] [    Test worker] o.s.t.web.servlet.TestDispatcherServlet  : Initializing Servlet ''
-2026-03-31T08:27:53.994-04:00  INFO 82860 --- [mobobs-api] [    Test worker] o.s.t.web.servlet.TestDispatcherServlet  : Completed initialization in 0 ms
-2026-03-31T08:27:54.006-04:00  INFO 82860 --- [mobobs-api] [    Test worker] c.m.a.i.IngestControllerValidationTest   : Started IngestControllerValidationTest in 0.975 seconds (process running for 1.82)
+2026-03-31T21:12:49.722-04:00  INFO 1158 --- [mobobs-api] [    Test worker] c.m.a.i.IngestControllerValidationTest   : Starting IngestControllerValidationTest using Java 17.0.10 with PID 1158 (started by vaishvikmaisuria in /Users/vaishvikmaisuria/Desktop/MaizLogger/apps/api)
+2026-03-31T21:12:49.725-04:00  INFO 1158 --- [mobobs-api] [    Test worker] c.m.a.i.IngestControllerValidationTest   : No active profile set, falling back to 1 default profile: "default"
+2026-03-31T21:12:59.854-04:00  INFO 1158 --- [mobobs-api] [    Test worker] o.s.b.t.m.w.SpringBootMockServletContext : Initializing Spring TestDispatcherServlet ''
+2026-03-31T21:12:59.856-04:00  INFO 1158 --- [mobobs-api] [    Test worker] o.s.t.web.servlet.TestDispatcherServlet  : Initializing Servlet ''
+2026-03-31T21:12:59.878-04:00  INFO 1158 --- [mobobs-api] [    Test worker] o.s.t.web.servlet.TestDispatcherServlet  : Completed initialization in 3 ms
+2026-03-31T21:13:00.028-04:00  INFO 1158 --- [mobobs-api] [    Test worker] c.m.a.i.IngestControllerValidationTest   : Started IngestControllerValidationTest in 11.074 seconds (process running for 14.108)
 ]]></system-out>
   <system-err><![CDATA[]]></system-err>
 </testsuite>

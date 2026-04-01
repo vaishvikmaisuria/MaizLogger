@@ -1,3 +1,29 @@
 spring:
-  application:
-    name: mobobs-worker
+    application:
+        name: mobobs-worker
+
+    kafka:
+        bootstrap-servers: ${KAFKA_BOOTSTRAP_SERVERS:localhost:29092}
+        consumer:
+            group-id: mobobs-worker
+            auto-offset-reset: earliest
+            enable-auto-commit: false
+            key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+            value-deserializer: org.springframework.kafka.support.serializer.JsonDeserializer
+            properties:
+                # Do not rely on the producer's type header; always deserialize as TelemetryEnvelope
+                spring.json.use.type.headers: false
+                spring.json.value.default.type: com.mobobs.worker.telemetry.TelemetryEnvelope
+                spring.json.trusted.packages: "com.mobobs.worker.telemetry"
+        producer:
+            key-serializer: org.apache.kafka.common.serialization.StringSerializer
+            value-serializer: org.springframework.kafka.support.serializer.JsonSerializer
+
+clickhouse:
+    url: ${CLICKHOUSE_URL:jdbc:clickhouse://localhost:8123/mobobs}
+    username: ${CLICKHOUSE_USER:default}
+    password: ${CLICKHOUSE_PASSWORD:}
+
+logging:
+    level:
+        com.mobobs.worker: INFO
