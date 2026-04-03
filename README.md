@@ -116,7 +116,41 @@ Run the unit tests for the generator (no network required):
 node --test scripts/seed-demo.test.mjs
 ```
 
-### 5. Open Dashboard (after PR7)
+### 5. Query the Dashboard API
+
+Three read-only endpoints expose ClickHouse analytics for the React dashboard:
+
+| Method | Endpoint               | Description                                                        |
+| ------ | ---------------------- | ------------------------------------------------------------------ |
+| `GET`  | `/v1/metrics/overview` | Totals: events, sessions, errors, API calls, avg app-start latency |
+| `GET`  | `/v1/errors/feed`      | Recent error feed, newest first                                    |
+| `GET`  | `/v1/api/latency`      | API latency percentiles (p50 / p95 / p99) bucketed by hour         |
+
+**Common query parameters** (all optional):
+
+| Param     | Example                | Default      |
+| --------- | ---------------------- | ------------ |
+| `app`     | `demo`                 | all apps     |
+| `env`     | `prod`                 | all envs     |
+| `release` | `v1.1.0`               | all releases |
+| `from`    | `2025-06-01T00:00:00Z` | 24 h ago     |
+| `to`      | `2025-06-02T00:00:00Z` | now          |
+
+`/v1/errors/feed` also accepts `limit` (default `50`, max `500`).
+`/v1/api/latency` also accepts `path` (e.g. `/checkout`) and `method` (e.g. `POST`).
+
+```bash
+# Overview for prod over the last 24 h
+curl "http://localhost:8081/v1/metrics/overview?app=demo&env=prod"
+
+# Recent 20 errors for a specific release
+curl "http://localhost:8081/v1/errors/feed?release=v1.1.0&limit=20"
+
+# API latency for the checkout endpoint
+curl "http://localhost:8081/v1/api/latency?path=/checkout&method=POST"
+```
+
+### 6. Open Dashboard (after PR7)
 
 ```bash
 open http://localhost:5173

@@ -1,32 +1,35 @@
 spring:
-  application:
-    name: mobobs-api
+    application:
+        name: mobobs-api
 
-  datasource:
-    url: jdbc:postgresql://${POSTGRES_HOST:localhost}:${POSTGRES_PORT:5432}/${POSTGRES_DB:mobobs}
-    username: ${POSTGRES_USER:mobobs}
-    password: ${POSTGRES_PASSWORD:mobobs}
+    datasource:
+        url: jdbc:postgresql://${POSTGRES_HOST:localhost}:${POSTGRES_PORT:5432}/${POSTGRES_DB:mobobs}
+        username: ${POSTGRES_USER:mobobs}
+        password: ${POSTGRES_PASSWORD:mobobs}
 
-  flyway:
-    enabled: true
-    locations: classpath:db/migration
+    flyway:
+        enabled: true
+        locations: classpath:db/migration
 
-  kafka:
-    bootstrap-servers: ${KAFKA_BOOTSTRAP_SERVERS:localhost:29092}
-    producer:
-      key-serializer: org.apache.kafka.common.serialization.StringSerializer
-      value-serializer: org.springframework.kafka.support.serializer.JsonSerializer
-      acks: all
-      properties:
-        enable.idempotence: true
-        max.in.flight.requests.per.connection: 5
+    kafka:
+        bootstrap-servers: ${KAFKA_BOOTSTRAP_SERVERS:localhost:29092}
+        producer:
+            key-serializer: org.apache.kafka.common.serialization.StringSerializer
+            value-serializer: org.springframework.kafka.support.serializer.JsonSerializer
+            acks: all
+            properties:
+                enable.idempotence: true
+                max.in.flight.requests.per.connection: 5
 
-  jackson:
-    default-property-inclusion: non_null
+    jackson:
+        default-property-inclusion: non_null
 
 server:
-  port: 8000
+    port: 8000
 
 mobobs:
-  ingest:
-    api-key-header: X-API-Key
+    ingest:
+        api-key-header: X-API-Key
+
+clickhouse:
+    url: ${CLICKHOUSE_URL:jdbc:clickhouse://localhost:8123/mobobs}
