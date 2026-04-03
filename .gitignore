@@ -29,3 +29,7 @@ build/
 
 # Environment files with secrets
 .env
+
+# Node
+node_modules/
+dist/

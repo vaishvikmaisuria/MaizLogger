@@ -156,6 +156,16 @@ curl "http://localhost:8081/v1/api/latency?path=/checkout&method=POST"
 open http://localhost:5173
 ```
 
+The dashboard serves three pages:
+
+| Page            | Route              | Data source                                                                               |
+| --------------- | ------------------ | ----------------------------------------------------------------------------------------- |
+| Overview        | `/overview`        | `GET /v1/metrics/overview` — total events, sessions, errors, API calls, avg start latency |
+| Errors          | `/errors`          | `GET /v1/errors/feed` — recent error feed with release/platform breakdown                 |
+| API Performance | `/api-performance` | `GET /v1/api/latency` — p50/p95/p99 line charts per endpoint                              |
+
+All pages share a filter bar (`app`, `env`, `release`, time window) that re-fetches data live.
+
 ## Infrastructure Services
 
 | Service    | Port(s)          | Description                       |
