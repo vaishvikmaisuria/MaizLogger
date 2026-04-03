@@ -166,6 +166,91 @@ The dashboard serves three pages:
 
 All pages share a filter bar (`app`, `env`, `release`, time window) that re-fetches data live.
 
+### 7. Use the RN SDK (PR8)
+
+Install from the monorepo (or publish to npm):
+
+```bash
+# Inside your React Native project
+npm install @mobobs/rn-observability-sdk
+```
+
+#### Initialise the client
+
+```ts
+import {
+	ObservabilityClient,
+	createTrackedFetch,
+	registerErrorHandlers,
+	trackHandledError,
+} from "@mobobs/rn-observability-sdk";
+
+export const client = new ObservabilityClient({
+	endpoint: "http://localhost:8000", // your API host
+	apiKey: "mobo_xxxx", // printed by the API on startup
+	appName: "MyApp",
+	appVersion: "1.0.0",
+	release: "v1.0.0",
+	environment: "prod", // 'dev' | 'staging' | 'prod'
+	platform: "ios", // or Platform.OS
+	batchSize: 20, // flush every N events
+	flushIntervalMs: 15_000, // flush every 15 s
+});
+
+// Wrap fetch so every request emits an api_timing event
+export const http = createTrackedFetch(client);
+
+// Register a crash handler for uncaught JS exceptions (React Native only)
+registerErrorHandlers(
+	client,
+	() => navigationRef.getCurrentRoute()?.name ?? null,
+);
+```
+
+#### Track events
+
+```ts
+// App start (call once, e.g. in the root component)
+client.trackAppStart(coldStartMs);
+
+// Screen view (call in useFocusEffect / NavigationContainer onStateChange)
+client.trackScreenView("HomeScreen");
+
+// Handled errors
+try {
+	await riskyOp();
+} catch (e) {
+	trackHandledError(client, e, "HomeScreen");
+}
+
+// Custom events
+client.trackCustom("purchase_completed", { amount: 29.99, currency: "USD" });
+```
+
+#### Flush lifecycle
+
+```ts
+// In root component
+useEffect(() => {
+	client.startAutoFlush();
+	return () => {
+		void client.flush();
+		client.stopAutoFlush();
+	};
+}, []);
+```
+
+#### Run SDK tests
+
+```bash
+cd packages/rn-observability-sdk
+npm install
+npm test          # 23 tests — client batching, trackedFetch timing
+npm run build     # tsc --noEmit type-check
+```
+
+See `packages/mobile-sample/App.tsx` for a full wiring example.
+
 ## Infrastructure Services
 
 | Service    | Port(s)          | Description                       |
