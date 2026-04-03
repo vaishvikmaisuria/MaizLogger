@@ -1,7 +1,22 @@
 # Test profile: override Kafka bootstrap-servers to the embedded broker
 # The property value is injected by @EmbeddedKafka via bootstrapServersProperty
 
+spring:
+    datasource:
+        url: jdbc:h2:mem:testdb;DB_CLOSE_DELAY=-1
+        driver-class-name: org.h2.Driver
+        username: sa
+        password:
+    sql:
+        init:
+            mode: never
+
 clickhouse:
     url: jdbc:clickhouse://localhost:8123/mobobs
     username: default
     password: ""
+
+# Disable alert evaluation so no Postgres schema is required in test
+mobobs:
+    alerts:
+        enabled: false

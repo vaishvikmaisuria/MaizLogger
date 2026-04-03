@@ -150,11 +150,18 @@ services:
                 condition: service_healthy
             clickhouse:
                 condition: service_healthy
+            postgres:
+                condition: service_healthy
         environment:
             KAFKA_BOOTSTRAP_SERVERS: kafka:9092
             CLICKHOUSE_URL: jdbc:clickhouse://clickhouse:8123/mobobs
             CLICKHOUSE_USER: default
             CLICKHOUSE_PASSWORD: ""
+            POSTGRES_HOST: postgres
+            POSTGRES_PORT: 5432
+            POSTGRES_DB: mobobs
+            POSTGRES_USER: mobobs
+            POSTGRES_PASSWORD: mobobs
 
     dashboard-web:
         build:

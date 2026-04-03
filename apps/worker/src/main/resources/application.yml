@@ -2,6 +2,12 @@ spring:
     application:
         name: mobobs-worker
 
+    datasource:
+        url: jdbc:postgresql://${POSTGRES_HOST:localhost}:${POSTGRES_PORT:5432}/${POSTGRES_DB:mobobs}
+        username: ${POSTGRES_USER:mobobs}
+        password: ${POSTGRES_PASSWORD:mobobs}
+        driver-class-name: org.postgresql.Driver
+
     kafka:
         bootstrap-servers: ${KAFKA_BOOTSTRAP_SERVERS:localhost:29092}
         consumer:
@@ -23,6 +29,11 @@ clickhouse:
     url: ${CLICKHOUSE_URL:jdbc:clickhouse://localhost:8123/mobobs}
     username: ${CLICKHOUSE_USER:default}
     password: ${CLICKHOUSE_PASSWORD:}
+
+mobobs:
+    alerts:
+        enabled: true
+        eval-interval-ms: 60000
 
 logging:
     level:

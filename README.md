@@ -251,6 +251,37 @@ npm run build     # tsc --noEmit type-check
 
 See `packages/mobile-sample/App.tsx` for a full wiring example.
 
+### 8. Alert Rules Feed (PR9)
+
+Three demo rules are seeded automatically by the API on first startup:
+
+| Rule                 | Metric            | Threshold     | Window |
+| -------------------- | ----------------- | ------------- | ------ |
+| High Error Rate      | `error_rate`      | 10 errors/min | 5 min  |
+| Slow p95 API Latency | `p95_latency_ms`  | 2000 ms       | 5 min  |
+| High Failed Requests | `failed_requests` | 50 requests   | 5 min  |
+
+The worker evaluates all enabled rules every 60 seconds and writes `alert_firings` to Postgres when a threshold is breached.
+
+```bash
+# List configured alert rules
+curl "http://localhost:8000/v1/alerts/rules?app=demo-app"
+
+# Recent alert firings (last 24 h by default)
+curl "http://localhost:8000/v1/alerts/feed?app=demo-app&limit=20"
+
+# Narrower time window
+curl "http://localhost:8000/v1/alerts/feed?from=2025-06-01T00:00:00Z&to=2025-06-02T00:00:00Z"
+```
+
+To trigger demo alerts, run the seed script (which generates high error + latency spikes) then wait one evaluation cycle:
+
+```bash
+node scripts/seed-demo.mjs
+# Wait ~60 s, then:
+curl "http://localhost:8000/v1/alerts/feed?app=demo-app"
+```
+
 ## Infrastructure Services
 
 | Service    | Port(s)          | Description                       |
