@@ -16,32 +16,32 @@ The entire stack runs locally via Docker Compose — no external services requir
 
 ## Key Features
 
-| Feature | Details |
-|---|---|
-| Event types | `app_start`, `screen_view`, `api_timing`, `error`, `custom_event` |
-| API key auth | Prefix + bcrypt hash stored in Postgres; verified per request |
-| Kafka delivery | At-least-once; idempotent producer (`acks=all`); 6-partition high-volume topics |
-| Dead-letter queues | `DefaultErrorHandler` + `DeadLetterPublishingRecoverer`; 5 retries with backoff |
+| Feature            | Details                                                                                                   |
+| ------------------ | --------------------------------------------------------------------------------------------------------- |
+| Event types        | `app_start`, `screen_view`, `api_timing`, `error`, `custom_event`                                         |
+| API key auth       | Prefix + bcrypt hash stored in Postgres; verified per request                                             |
+| Kafka delivery     | At-least-once; idempotent producer (`acks=all`); 6-partition high-volume topics                           |
+| Dead-letter queues | `DefaultErrorHandler` + `DeadLetterPublishingRecoverer`; 5 retries with backoff                           |
 | ClickHouse storage | `ReplacingMergeTree` tables; time-partitioned; `LowCardinality` dimensions; `quantileTDigest` percentiles |
-| Rollup views | `error_rate_1m`, `api_latency_1m`, `events_throughput_1m` aggregated at insert time |
-| Postgres metadata | Flyway-managed schema; stores apps, API keys, alert rules, alert firings |
-| Alert evaluation | Scheduled worker loop (60 s); suppresses repeat firings within 2 × window |
-| React Native SDK | Batch flush, tracked fetch wrapper, error boundary integration, screen tracking via `useFocusEffect` |
-| Dashboard | React + Vite SPA with overview, errors, and API performance pages and shared filter bar |
+| Rollup views       | `error_rate_1m`, `api_latency_1m`, `events_throughput_1m` aggregated at insert time                       |
+| Postgres metadata  | Flyway-managed schema; stores apps, API keys, alert rules, alert firings                                  |
+| Alert evaluation   | Scheduled worker loop (60 s); suppresses repeat firings within 2 × window                                 |
+| React Native SDK   | Batch flush, tracked fetch wrapper, error boundary integration, screen tracking via `useFocusEffect`      |
+| Dashboard          | React + Vite SPA with overview, errors, and API performance pages and shared filter bar                   |
 
 ## Tech Stack
 
-| Layer | Technology |
-|---|---|
+| Layer                 | Technology                                                     |
+| --------------------- | -------------------------------------------------------------- |
 | Collector & Query API | Java 17, Spring Boot 3 (MVC), Bean Validation, Jackson, Flyway |
-| Event streaming | Apache Kafka, Spring Kafka (batch listeners, manual ack) |
-| Analytics store | ClickHouse (MergeTree + materialized views) |
-| Metadata store | PostgreSQL (Flyway migrations) |
-| Worker | Spring Boot 3, Spring Kafka, ClickHouse JDBC, Spring Scheduler |
-| Dashboard | React 18, TypeScript, Vite |
-| Mobile SDK | React Native, TypeScript |
-| Build | Gradle 8 (Kotlin DSL), multi-project monorepo |
-| Local infra | Docker Compose, Kafka UI, Zookeeper |
+| Event streaming       | Apache Kafka, Spring Kafka (batch listeners, manual ack)       |
+| Analytics store       | ClickHouse (MergeTree + materialized views)                    |
+| Metadata store        | PostgreSQL (Flyway migrations)                                 |
+| Worker                | Spring Boot 3, Spring Kafka, ClickHouse JDBC, Spring Scheduler |
+| Dashboard             | React 18, TypeScript, Vite                                     |
+| Mobile SDK            | React Native, TypeScript                                       |
+| Build                 | Gradle 8 (Kotlin DSL), multi-project monorepo                  |
+| Local infra           | Docker Compose, Kafka UI, Zookeeper                            |
 
 ## Architecture
 
